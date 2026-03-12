@@ -1,0 +1,240 @@
+{
+	"common": {
+		"language": "Idioma",
+		"theme": "Tema",
+		"toggleTheme": "Alternar tema",
+		"locales": {
+			"pt-br": "Português (Brasil)",
+			"en": "English",
+			"es": "Espanhol"
+		}
+	},
+	"form": {
+		"labels": {
+			"fullName": "Nome completo",
+			"email": "Email",
+			"location": "Localização",
+			"phone": "Telefone",
+			"summary": "Resumo",
+			"website": "Website",
+			"linkedIn": "LinkedIn",
+			"github": "GitHub"
+		},
+		"placeholders": {
+			"fullName": "ex.: Alex Johnson",
+			"email": "ex.: alex@exemplo.com",
+			"location": "ex.: São Paulo, Brasil",
+			"phone": "ex.: +55 11 99999-9999",
+			"summary": "Adicione um resumo profissional objetivo",
+			"website": "https://seusite.com",
+			"linkedIn": "https://linkedin.com/in/seuperfil",
+			"github": "https://github.com/seuperfil"
+		},
+		"actions": {
+			"loadSample": "Carregar exemplo",
+			"resetDocument": "Resetar documento",
+			"confirm": "Confirmar",
+			"cancel": "Cancelar"
+		},
+		"status": {
+			"documentId": "ID do documento",
+			"schemaVersion": "Versão do schema",
+			"lastSavedAt": "Último autosave",
+			"notSavedYet": "ainda não salvo"
+		},
+		"messages": {
+			"sampleLoaded": "Documento de exemplo carregado e salvo localmente.",
+			"resetSuccess": "Documento resetado com sucesso."
+		},
+		"confirmReset": "Deseja realmente apagar o documento atual e recriar o CV em branco?"
+	},
+	"sections": {
+		"title": "Seções do documento",
+		"description": "Gerencie visibilidade e ordenação dos itens para controlar exatamente o que entra no CV final.",
+		"actions": {
+			"hide": "Ocultar",
+			"show": "Exibir",
+			"addItem": "Adicionar item vazio"
+		},
+		"visibility": {
+			"visible": "visível",
+			"hidden": "oculta"
+		},
+		"summary": "{count, plural, =0 {Nenhum item} one {# item} other {# itens}} · seção {visibility}",
+		"messages": {
+			"emptyItemAdded": "Item vazio adicionado em {section}."
+		},
+		"names": {
+			"experience": "Experiência",
+			"education": "Educação",
+			"languages": "Idiomas",
+			"skills": "Habilidades",
+			"volunteer": "Voluntariado",
+			"projects": "Projetos",
+			"extras": "Informações extras"
+		}
+	},
+	"export": {
+		"title": "Exportar CV",
+		"description": "Baixe seu CV nos formatos PDF, DOCX ou JSON.",
+		"loading": "Gerando...",
+		"actions": {
+			"exportPdf": "Exportar PDF",
+			"exportDocx": "Exportar DOCX",
+			"exportJson": "Exportar JSON",
+			"importJson": "Importar JSON"
+		},
+		"messages": {
+			"success": "Arquivo JSON gerado com sucesso.",
+			"importSuccess": "Arquivo JSON importado com sucesso."
+		},
+		"filenamePdf": "curriculo.pdf",
+		"filenameDocx": "curriculo.docx",
+		"filenameJson": "cv-document.json",
+		"fileName": "cv-document.json"
+	},
+	"errors": {
+		"generic": "Algo deu errado ao processar a solicitação.",
+		"codes": {
+			"browser-unavailable": "O armazenamento do navegador não está disponível neste contexto.",
+			"stored-data-invalid": "Os dados salvos estavam inválidos e foram reiniciados com segurança.",
+			"stored-data-unparseable": "Os dados salvos não puderam ser lidos e foram reiniciados com segurança.",
+			"save-failed": "Não foi possível salvar os dados no localStorage.",
+			"clear-failed": "Não foi possível limpar o localStorage.",
+			"invalid-json-document": "O JSON importado não corresponde ao schema esperado do CV.",
+			"invalid-json-file": "O arquivo selecionado não é um JSON válido."
+		}
+	},
+	"home": {
+		"title": "CV Generator",
+		"subtitle": "Editor e preview de currículo em tela única",
+		"welcomeTitle": "Crie, revise e exporte seu CV",
+		"welcomeDescription": "Edite todas as seções do currículo, acompanhe o preview em tempo real e exporte em PDF, DOCX ou JSON."
+	},
+	"editor": {
+		"sections": {
+			"personal": "Dados pessoais",
+			"experience": "Experiência",
+			"education": "Educação",
+			"languages": "Idiomas",
+			"skills": "Habilidades",
+			"volunteer": "Voluntariado",
+			"projects": "Projetos",
+			"extras": "Extras"
+		},
+		"personalDescription": "Dados centrais pessoais e de contato para o cabeçalho do CV.",
+		"experienceDescription": "Adicione e gerencie experiências profissionais com controle de ordem e visibilidade.",
+		"educationDescription": "Preencha sua formação acadêmica com detalhes essenciais.",
+		"languagesDescription": "Liste idiomas com nível de proficiência e observações.",
+		"skillsDescription": "Cadastre competências técnicas e comportamentais.",
+		"sectionHidden": "Esta seção está oculta e não aparecerá no preview ou exportação.",
+		"emptyExperience": "Nenhum item de experiência ainda. Adicione sua primeira posição.",
+		"emptyEducation": "Nenhum item de educação ainda. Adicione sua primeira formação.",
+		"emptyLanguages": "Nenhum idioma adicionado ainda.",
+		"emptySkills": "Nenhuma habilidade adicionada ainda.",
+		"untitledExperience": "Cargo sem título",
+		"untitledEducation": "Formação sem título",
+		"untitledLanguage": "Idioma sem nome",
+		"untitledSkill": "Habilidade sem nome",
+		"previewTitle": "Preview em tempo real",
+		"previewDescription": "Este painel reflete seus dados visíveis no estado atual.",
+		"emptyName": "Seu nome completo",
+		"emptyContacts": "Email, telefone e localização aparecerão aqui.",
+		"emptyExperiencePreview": "Nenhum item de experiência visível ainda.",
+		"emptyEducationPreview": "Nenhum item de educação visível ainda.",
+		"emptyLanguagesPreview": "Nenhum idioma visível ainda.",
+		"emptySkillsPreview": "Nenhuma habilidade visível ainda.",
+		"current": "Atual",
+		"experience": {
+			"role": "Cargo",
+			"company": "Empresa",
+			"location": "Localização",
+			"current": "Cargo atual",
+			"startDate": "Data de início",
+			"endDate": "Data de término",
+			"summary": "Resumo"
+		},
+		"education": {
+			"institution": "Instituição",
+			"degree": "Curso",
+			"fieldOfStudy": "Área",
+			"location": "Localização",
+			"current": "Em andamento",
+			"startDate": "Data de início",
+			"endDate": "Data de término",
+			"summary": "Resumo"
+		},
+		"language": {
+			"name": "Idioma",
+			"proficiency": "Proficiência",
+			"details": "Detalhes",
+			"proficiencyOptions": {
+				"select": "Selecionar proficiência",
+				"basic": "Básico",
+				"intermediate": "Intermediário",
+				"advanced": "Avançado",
+				"fluent": "Fluente",
+				"native": "Nativo"
+			}
+		},
+		"skill": {
+			"name": "Habilidade",
+			"category": "Categoria",
+			"level": "Nível"
+		},
+		"volunteerDescription": "Adicione experiências de voluntariado e outros envolvimentos com organizações.",
+		"projectsDescription": "Liste seus projetos pessoais ou profissionais com links e detalhes.",
+		"extrasDescription": "Informações complementares como prêmios, certificações ou outros destaques.",
+		"emptyVolunteer": "Nenhum item de voluntariado ainda. Adicione sua primeira experiência.",
+		"emptyProjects": "Nenhum projeto adicionado ainda.",
+		"emptyExtras": "Nenhuma informação extra adicionada ainda.",
+		"untitledVolunteer": "Voluntariado sem título",
+		"untitledProject": "Projeto sem título",
+		"untitledExtra": "Extra sem título",
+		"emptyVolunteerPreview": "Nenhum item de voluntariado visível ainda.",
+		"emptyProjectsPreview": "Nenhum projeto visível ainda.",
+		"emptyExtrasPreview": "Nenhuma informação extra visível ainda.",
+		"volunteer": {
+			"role": "Cargo",
+			"organization": "Organização",
+			"location": "Localização",
+			"current": "Em andamento",
+			"startDate": "Data de início",
+			"endDate": "Data de término",
+			"summary": "Resumo"
+		},
+		"project": {
+			"name": "Nome do projeto",
+			"role": "Função",
+			"website": "Site",
+			"github": "GitHub",
+			"current": "Em andamento",
+			"startDate": "Data de início",
+			"endDate": "Data de término",
+			"summary": "Resumo",
+			"technologies": "Tecnologias (separadas por vírgula)"
+		},
+		"extra": {
+			"title": "Título",
+			"value": "Valor",
+			"details": "Detalhes"
+		},
+		"mobileView": {
+			"label": "Modo de visualização",
+			"showEditor": "Editor",
+			"showPreview": "Preview"
+		},
+		"actions": {
+			"toggleVisibility": "Alternar visibilidade",
+			"moveUp": "Mover para cima",
+			"moveDown": "Mover para baixo",
+			"deleteItem": "Excluir item"
+		}
+	},
+	"header": {
+		"saveStatus": {
+			"saved": "Salvo",
+			"notSaved": "Não salvo"
+		}
+	}
+}

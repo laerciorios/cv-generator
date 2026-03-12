@@ -1,0 +1,240 @@
+{
+	"common": {
+		"language": "Language",
+		"theme": "Theme",
+		"toggleTheme": "Toggle theme",
+		"locales": {
+			"pt-br": "Portuguese (Brazil)",
+			"en": "English",
+			"es": "Spanish"
+		}
+	},
+	"form": {
+		"labels": {
+			"fullName": "Full name",
+			"email": "Email",
+			"location": "Location",
+			"phone": "Phone",
+			"summary": "Summary",
+			"website": "Website",
+			"linkedIn": "LinkedIn",
+			"github": "GitHub"
+		},
+		"placeholders": {
+			"fullName": "e.g. Alex Johnson",
+			"email": "e.g. alex@example.com",
+			"location": "e.g. Sao Paulo, Brazil",
+			"phone": "e.g. +55 11 99999-9999",
+			"summary": "Add a concise profile summary",
+			"website": "https://yourwebsite.com",
+			"linkedIn": "https://linkedin.com/in/yourprofile",
+			"github": "https://github.com/yourprofile"
+		},
+		"actions": {
+			"loadSample": "Load sample",
+			"resetDocument": "Reset document",
+			"confirm": "Confirm",
+			"cancel": "Cancel"
+		},
+		"status": {
+			"documentId": "Document ID",
+			"schemaVersion": "Schema version",
+			"lastSavedAt": "Last autosave",
+			"notSavedYet": "not saved yet"
+		},
+		"messages": {
+			"sampleLoaded": "Sample document loaded and saved locally.",
+			"resetSuccess": "Document reset successfully."
+		},
+		"confirmReset": "Do you really want to remove the current document and recreate a blank CV?"
+	},
+	"sections": {
+		"title": "Document sections",
+		"description": "Manage item visibility and ordering to control exactly what appears in your final CV.",
+		"actions": {
+			"hide": "Hide",
+			"show": "Show",
+			"addItem": "Add empty item"
+		},
+		"visibility": {
+			"visible": "visible",
+			"hidden": "hidden"
+		},
+		"summary": "{count, plural, =0 {No items} one {# item} other {# items}} · section is {visibility}",
+		"messages": {
+			"emptyItemAdded": "Empty item added to {section}."
+		},
+		"names": {
+			"experience": "Experience",
+			"education": "Education",
+			"languages": "Languages",
+			"skills": "Skills",
+			"volunteer": "Volunteer",
+			"projects": "Projects",
+			"extras": "Extras"
+		}
+	},
+	"export": {
+		"title": "Export CV",
+		"description": "Download your CV as PDF, DOCX, or JSON.",
+		"loading": "Generating...",
+		"actions": {
+			"exportPdf": "Export PDF",
+			"exportDocx": "Export DOCX",
+			"exportJson": "Export JSON",
+			"importJson": "Import JSON"
+		},
+		"messages": {
+			"success": "JSON file generated successfully.",
+			"importSuccess": "JSON file imported successfully."
+		},
+		"filenamePdf": "resume.pdf",
+		"filenameDocx": "resume.docx",
+		"filenameJson": "cv-document.json",
+		"fileName": "cv-document.json"
+	},
+	"errors": {
+		"generic": "Something went wrong while processing your request.",
+		"codes": {
+			"browser-unavailable": "Browser storage is not available in this context.",
+			"stored-data-invalid": "Stored data was invalid and has been safely reset.",
+			"stored-data-unparseable": "Stored data could not be parsed and has been safely reset.",
+			"save-failed": "Unable to save data to local storage.",
+			"clear-failed": "Unable to clear local storage.",
+			"invalid-json-document": "The imported JSON does not match the expected CV schema.",
+			"invalid-json-file": "The selected file is not valid JSON."
+		}
+	},
+	"home": {
+		"title": "CV Generator",
+		"subtitle": "Single-page CV editor and preview",
+		"welcomeTitle": "Build, review, and export your CV",
+		"welcomeDescription": "Edit every CV section, follow the live preview, and export as PDF, DOCX, or JSON."
+	},
+	"editor": {
+		"sections": {
+			"personal": "Personal info",
+			"experience": "Experience",
+			"education": "Education",
+			"languages": "Languages",
+			"skills": "Skills",
+			"volunteer": "Volunteer",
+			"projects": "Projects",
+			"extras": "Extras"
+		},
+		"personalDescription": "Core personal and contact details for your CV header.",
+		"experienceDescription": "Add and manage work experiences with order and visibility control.",
+		"educationDescription": "Fill in your academic background with essential details.",
+		"languagesDescription": "List languages with proficiency level and notes.",
+		"skillsDescription": "Register technical and soft skills.",
+		"sectionHidden": "This section is hidden and will not appear in preview or export.",
+		"emptyExperience": "No experience items yet. Add your first position.",
+		"emptyEducation": "No education items yet. Add your first education entry.",
+		"emptyLanguages": "No languages added yet.",
+		"emptySkills": "No skills added yet.",
+		"untitledExperience": "Untitled role",
+		"untitledEducation": "Untitled education",
+		"untitledLanguage": "Untitled language",
+		"untitledSkill": "Untitled skill",
+		"previewTitle": "Live preview",
+		"previewDescription": "This panel reflects your current visible data.",
+		"emptyName": "Your full name",
+		"emptyContacts": "Email, phone, and location will appear here.",
+		"emptyExperiencePreview": "No visible experience items yet.",
+		"emptyEducationPreview": "No visible education items yet.",
+		"emptyLanguagesPreview": "No visible language items yet.",
+		"emptySkillsPreview": "No visible skill items yet.",
+		"current": "Current",
+		"experience": {
+			"role": "Role",
+			"company": "Company",
+			"location": "Location",
+			"current": "Current role",
+			"startDate": "Start date",
+			"endDate": "End date",
+			"summary": "Summary"
+		},
+		"education": {
+			"institution": "Institution",
+			"degree": "Degree",
+			"fieldOfStudy": "Field of study",
+			"location": "Location",
+			"current": "Ongoing",
+			"startDate": "Start date",
+			"endDate": "End date",
+			"summary": "Summary"
+		},
+		"language": {
+			"name": "Language",
+			"proficiency": "Proficiency",
+			"details": "Details",
+			"proficiencyOptions": {
+				"select": "Select proficiency",
+				"basic": "Basic",
+				"intermediate": "Intermediate",
+				"advanced": "Advanced",
+				"fluent": "Fluent",
+				"native": "Native"
+			}
+		},
+		"skill": {
+			"name": "Skill",
+			"category": "Category",
+			"level": "Level"
+		},
+		"volunteerDescription": "Add volunteer experiences and other involvement with organizations.",
+		"projectsDescription": "List your personal or professional projects with links and details.",
+		"extrasDescription": "Additional information such as awards, certifications, or other highlights.",
+		"emptyVolunteer": "No volunteer items yet. Add your first experience.",
+		"emptyProjects": "No projects added yet.",
+		"emptyExtras": "No extra information added yet.",
+		"untitledVolunteer": "Untitled volunteer",
+		"untitledProject": "Untitled project",
+		"untitledExtra": "Untitled extra",
+		"emptyVolunteerPreview": "No visible volunteer items yet.",
+		"emptyProjectsPreview": "No visible projects yet.",
+		"emptyExtrasPreview": "No visible extra information yet.",
+		"volunteer": {
+			"role": "Role",
+			"organization": "Organization",
+			"location": "Location",
+			"current": "Ongoing",
+			"startDate": "Start date",
+			"endDate": "End date",
+			"summary": "Summary"
+		},
+		"project": {
+			"name": "Project name",
+			"role": "Role",
+			"website": "Website",
+			"github": "GitHub",
+			"current": "Ongoing",
+			"startDate": "Start date",
+			"endDate": "End date",
+			"summary": "Summary",
+			"technologies": "Technologies (comma-separated)"
+		},
+		"extra": {
+			"title": "Title",
+			"value": "Value",
+			"details": "Details"
+		},
+		"mobileView": {
+			"label": "View mode",
+			"showEditor": "Editor",
+			"showPreview": "Preview"
+		},
+		"actions": {
+			"toggleVisibility": "Toggle visibility",
+			"moveUp": "Move up",
+			"moveDown": "Move down",
+			"deleteItem": "Delete item"
+		}
+	},
+	"header": {
+		"saveStatus": {
+			"saved": "Saved",
+			"notSaved": "Not saved"
+		}
+	}
+}
