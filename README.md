@@ -24,6 +24,7 @@ The application has no backend and no authentication. CV data is intended to liv
 - Selected language persists across visits, including root-route redirects.
 - All CV sections are editable with per-section and per-item visibility plus item ordering.
 - Preview/export parity is enforced through a shared visibility filter.
+- The editor includes 3 ATS-friendly templates (`classic`, `compact`, `executive`) applied to preview, PDF, and DOCX.
 - Unit tests cover schema validation, storage behavior, export filtering, and core store actions.
 - Build and lint are clean.
 

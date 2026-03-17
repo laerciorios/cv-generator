@@ -1,5 +1,9 @@
 export const CV_SCHEMA_VERSION = 1;
 
+export const CV_TEMPLATES = ["classic", "compact", "executive"] as const;
+export type CVTemplate = (typeof CV_TEMPLATES)[number];
+export const DEFAULT_CV_TEMPLATE: CVTemplate = "classic";
+
 export const CV_SECTION_KEYS = [
   "experience",
   "education",
@@ -114,6 +118,7 @@ export interface CVSections {
 
 export interface CVDocument {
   id: string;
+  template: CVTemplate;
   personalInfo: PersonalInfo;
   sections: CVSections;
   metadata: CVMetadata;
@@ -293,6 +298,7 @@ export function createEmptyCVDocument(): CVDocument {
 
   return {
     id: createId(),
+    template: DEFAULT_CV_TEMPLATE,
     personalInfo: createEmptyPersonalInfo(),
     sections: createEmptySections(),
     metadata: {

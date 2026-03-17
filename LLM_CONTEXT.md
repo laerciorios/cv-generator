@@ -37,6 +37,7 @@
 - The locale page includes a responsive editor workspace with section navigation, personal info form, experience CRUD, and live preview.
 - The editor now includes all 7 sections (experience, education, languages, skills, volunteer, projects, extras) with full CRUD, reorder, and visibility controls.
 - The preview was redesigned as a scrollable A4-width panel with neutral paper colors, section dividers, and strict visibility filtering matching the export contract.
+- The editor includes three ATS-oriented templates (`classic`, `compact`, `executive`) and keeps template parity across preview, PDF, and DOCX.
 - Test infrastructure is implemented with Vitest + jsdom.
 - Unit tests now cover Zod schemas, localStorage wrapper behavior, export visibility filtering, and main Zustand store actions.
 

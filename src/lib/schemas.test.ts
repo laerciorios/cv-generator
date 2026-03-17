@@ -27,4 +27,17 @@ describe("cvDocumentSchema", () => {
 
     expect(result.success).toBe(false);
   });
+
+  it("fills default template for legacy documents", () => {
+    const sample = createSampleCVDocument();
+    const legacyDocument = { ...sample };
+    delete (legacyDocument as { template?: string }).template;
+
+    const result = cvDocumentSchema.safeParse(legacyDocument);
+
+    expect(result.success).toBe(true);
+    if (result.success) {
+      expect(result.data.template).toBe("classic");
+    }
+  });
 });

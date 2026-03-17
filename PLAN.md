@@ -28,6 +28,11 @@
 - Included: JSON import/export as manual backup.
 - Out of scope for v1: advanced multiple templates, collaboration, cloud sync, analytics.
 
+## Post-v1 Updates
+
+- Added 3 ATS-oriented CV templates selectable by the user (`classic`, `compact`, `executive`).
+- Template selection is persisted in the main CV document and applied consistently to preview, PDF, and DOCX.
+
 ## Data Model (High Level)
 
 ```ts

@@ -1,5 +1,10 @@
 import { z } from "zod";
-import { CV_SCHEMA_VERSION, type CVDocument } from "@/types/cv.types";
+import {
+  CV_SCHEMA_VERSION,
+  CV_TEMPLATES,
+  DEFAULT_CV_TEMPLATE,
+  type CVDocument,
+} from "@/types/cv.types";
 
 const urlPattern = /^https?:\/\/[^\s]+$/i;
 const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
@@ -110,6 +115,7 @@ function sectionStateSchema<T extends z.ZodType>(itemSchema: T) {
 
 export const cvDocumentSchema: z.ZodType<CVDocument> = z.object({
   id: z.uuid(),
+  template: z.enum(CV_TEMPLATES).default(DEFAULT_CV_TEMPLATE),
   personalInfo: personalInfoSchema,
   sections: z.object({
     experience: sectionStateSchema(experienceItemSchema),

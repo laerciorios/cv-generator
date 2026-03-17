@@ -83,4 +83,18 @@ describe("useCVStore", () => {
       "invalid-json-document",
     );
   });
+
+  it("updates template and persists the selection", () => {
+    const store = useCVStore.getState();
+    store.hydrate();
+
+    useCVStore.getState().setTemplate("executive");
+
+    const nextState = useCVStore.getState();
+    const persistedRaw = window.localStorage.getItem(CV_DOCUMENT_STORAGE_KEY);
+
+    expect(nextState.document.template).toBe("executive");
+    expect(nextState.lastSavedAt).toBe(nextState.document.metadata.updatedAt);
+    expect(persistedRaw).toContain('"template":"executive"');
+  });
 });

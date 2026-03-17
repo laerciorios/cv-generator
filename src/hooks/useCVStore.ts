@@ -14,6 +14,7 @@ import {
   createSectionItem,
   type CVDocument,
   type CVSectionKey,
+  type CVTemplate,
   type PersonalInfo,
   type SectionItemMap,
 } from "@/types/cv.types";
@@ -33,6 +34,7 @@ interface CVStoreState {
   hydrate: () => void;
   replaceDocument: (document: CVDocument) => void;
   updatePersonalInfo: (updates: Partial<PersonalInfo>) => void;
+  setTemplate: (template: CVTemplate) => void;
   setSectionVisibility: (section: CVSectionKey, visible: boolean) => void;
   addSectionItem: <K extends CVSectionKey>(
     section: K,
@@ -119,6 +121,21 @@ export const useCVStore = create<CVStoreState>((set, get) => {
             ...currentDocument.personalInfo,
             ...updates,
           },
+        }),
+      );
+    },
+
+    setTemplate: (template) => {
+      const currentDocument = get().document;
+
+      if (currentDocument.template === template) {
+        return;
+      }
+
+      persistDocument(
+        touchDocument({
+          ...currentDocument,
+          template,
         }),
       );
     },

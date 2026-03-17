@@ -4,15 +4,17 @@ import { useState } from "react";
 import { useCVStore } from "@/hooks/useCVStore";
 import { generateAndDownloadPDF } from "@/lib/exporters/pdf.generator";
 import { generateAndDownloadDOCX } from "@/lib/exporters/docx.generator";
+import { generateAndDownloadLatex } from "@/lib/exporters/latex.generator";
 import type { ExportLabels } from "@/lib/exporters/filter";
 
-type ExportFormat = "pdf" | "docx";
+type ExportFormat = "pdf" | "docx" | "latex";
 
 interface UseExportReturn {
   loading: ExportFormat | null;
   error: string | null;
   exportPDF: (labels: ExportLabels, filename: string) => Promise<void>;
   exportDOCX: (labels: ExportLabels, filename: string) => Promise<void>;
+  exportLatex: (labels: ExportLabels, filename: string) => Promise<void>;
   exportJSON: (filename: string) => void;
 }
 
@@ -51,6 +53,21 @@ export function useExport(): UseExportReturn {
     }
   }
 
+  async function exportLatex(
+    labels: ExportLabels,
+    filename: string,
+  ): Promise<void> {
+    setLoading("latex");
+    setError(null);
+    try {
+      generateAndDownloadLatex(document, labels, filename);
+    } catch (err) {
+      setError(err instanceof Error ? err.message : String(err));
+    } finally {
+      setLoading(null);
+    }
+  }
+
   function exportJSON(filename: string): void {
     const json = exportToJson();
     const blob = new Blob([json], { type: "application/json" });
@@ -62,5 +79,5 @@ export function useExport(): UseExportReturn {
     URL.revokeObjectURL(url);
   }
 
-  return { loading, error, exportPDF, exportDOCX, exportJSON };
+  return { loading, error, exportPDF, exportDOCX, exportLatex, exportJSON };
 }

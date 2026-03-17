@@ -1,6 +1,6 @@
 "use client";
 
-import { FileDown, FileJson, FileType } from "lucide-react";
+import { FileCode2, FileDown, FileJson, FileType } from "lucide-react";
 import { useTranslations } from "next-intl";
 import { Button } from "@/components/ui/button";
 import { useExport } from "@/hooks/useExport";
@@ -8,7 +8,8 @@ import { useExport } from "@/hooks/useExport";
 export function ExportPanel() {
   const t = useTranslations("export");
   const tEditor = useTranslations("editor");
-  const { loading, error, exportPDF, exportDOCX, exportJSON } = useExport();
+  const { loading, error, exportPDF, exportDOCX, exportLatex, exportJSON } =
+    useExport();
 
   const labels = {
     sections: {
@@ -54,6 +55,19 @@ export function ExportPanel() {
             <FileType />
           )}
           {loading === "docx" ? t("loading") : t("actions.exportDocx")}
+        </Button>
+
+        <Button
+          variant="outline"
+          onClick={() => exportLatex(labels, t("filenameLatex"))}
+          disabled={loading !== null}
+        >
+          {loading === "latex" ? (
+            <span className="h-4 w-4 animate-spin rounded-full border-2 border-current border-t-transparent" />
+          ) : (
+            <FileCode2 />
+          )}
+          {loading === "latex" ? t("loading") : t("actions.exportLatex")}
         </Button>
 
         <Button

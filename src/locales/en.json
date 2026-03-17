@@ -76,11 +76,12 @@
 	},
 	"export": {
 		"title": "Export CV",
-		"description": "Download your CV as PDF, DOCX, or JSON.",
+		"description": "Download your CV as PDF, DOCX, LaTeX, or JSON.",
 		"loading": "Generating...",
 		"actions": {
 			"exportPdf": "Export PDF",
 			"exportDocx": "Export DOCX",
+			"exportLatex": "Export LaTeX",
 			"exportJson": "Export JSON",
 			"importJson": "Import JSON"
 		},
@@ -90,6 +91,7 @@
 		},
 		"filenamePdf": "resume.pdf",
 		"filenameDocx": "resume.docx",
+		"filenameLatex": "resume.tex",
 		"filenameJson": "cv-document.json",
 		"fileName": "cv-document.json"
 	},
@@ -223,6 +225,15 @@
 			"label": "View mode",
 			"showEditor": "Editor",
 			"showPreview": "Preview"
+		},
+		"templates": {
+			"title": "Template",
+			"atsHint": "ATS-friendly structure",
+			"options": {
+				"classic": "Standard",
+				"compact": "Focused",
+				"executive": "Corporate"
+			}
 		},
 		"actions": {
 			"toggleVisibility": "Toggle visibility",
