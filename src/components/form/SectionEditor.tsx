@@ -61,20 +61,20 @@ export function SectionEditor({ section }: SectionEditorProps) {
   }
 
   return (
-    <section className="bg-card grid gap-4 rounded-2xl border p-6 shadow-sm">
-      <div className="flex flex-wrap items-start justify-between gap-3">
+    <section className="flex flex-col gap-5">
+      <header className="flex flex-wrap items-start justify-between gap-3 border-b pb-4">
         <div>
-          <h2 className="text-xl font-semibold tracking-tight">
+          <h2 className="text-lg font-semibold tracking-tight">
             {tEditor(`sections.${section}`)}
           </h2>
-          <p className="text-muted-foreground text-sm">
+          <p className="text-muted-foreground mt-0.5 text-[0.8rem]">
             {tEditor(config.descriptionKey)}
           </p>
         </div>
 
-        <div className="flex gap-2">
+        <div className="flex gap-1.5">
           <Button
-            variant="outline"
+            variant="ghost"
             size="sm"
             onClick={() => setSectionVisibility(section, !state.visible)}
           >
@@ -88,88 +88,114 @@ export function SectionEditor({ section }: SectionEditorProps) {
             {tSections("actions.addItem")}
           </Button>
         </div>
-      </div>
+      </header>
 
       {!state.visible ? (
-        <p className="bg-muted text-muted-foreground rounded-lg border px-3 py-2 text-sm">
+        <p className="bg-muted text-muted-foreground flex items-center gap-2 rounded-md px-3 py-2 text-[0.8rem]">
+          <EyeOff className="size-3.5 shrink-0" aria-hidden="true" />
           {tEditor("sectionHidden")}
         </p>
       ) : null}
 
-      <div className="grid gap-4">
-        {items.length === 0 ? (
-          <p className="text-muted-foreground rounded-lg border border-dashed px-4 py-6 text-sm">
+      {items.length === 0 ? (
+        <div className="flex flex-col items-start gap-3 rounded-lg border border-dashed px-5 py-6">
+          <p className="text-muted-foreground text-sm">
             {tEditor(config.emptyKey)}
           </p>
-        ) : null}
-
-        {items.map((item, index) => (
-          <article key={item.id} className="grid gap-4 rounded-xl border p-4">
-            <div className="flex flex-wrap items-center justify-between gap-2">
-              <p className="font-medium">{itemTitle(item)}</p>
-
-              <div className="flex gap-2">
-                <Button
-                  variant="outline"
-                  size="sm"
-                  aria-label={tEditor("actions.toggleVisibility")}
-                  aria-pressed={item.visible}
-                  onClick={() =>
-                    setSectionItemVisibility(section, item.id, !item.visible)
-                  }
-                >
-                  {item.visible ? <EyeOff /> : <Eye />}
-                </Button>
-                <Button
-                  variant="outline"
-                  size="sm"
-                  aria-label={tEditor("actions.moveUp")}
-                  onClick={() => reorderSectionItems(section, index, index - 1)}
-                  disabled={index === 0}
-                >
-                  <ArrowUp />
-                </Button>
-                <Button
-                  variant="outline"
-                  size="sm"
-                  aria-label={tEditor("actions.moveDown")}
-                  onClick={() => reorderSectionItems(section, index, index + 1)}
-                  disabled={index === items.length - 1}
-                >
-                  <ArrowDown />
-                </Button>
-                <Button
-                  variant="destructive"
-                  size="sm"
-                  aria-label={tEditor("actions.deleteItem")}
-                  onClick={() => removeSectionItem(section, item.id)}
-                >
-                  <Trash2 />
-                </Button>
-              </div>
-            </div>
-
-            <div
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={() => addSectionItem(section)}
+          >
+            <Plus />
+            {tSections("actions.addItem")}
+          </Button>
+        </div>
+      ) : (
+        <div className="flex flex-col gap-4">
+          {items.map((item, index) => (
+            <article
+              key={item.id}
               className={cn(
-                "grid gap-4",
-                config.columns === 3 ? "md:grid-cols-3" : "md:grid-cols-2",
+                "border-border/70 flex flex-col gap-4 rounded-lg border p-4",
+                !item.visible && "opacity-60",
               )}
             >
-              {config.fields.map((field) => (
-                <SectionItemField
-                  key={field.name}
-                  field={field}
-                  item={item}
-                  columns={config.columns}
-                  label={tEditor(`${config.labelPrefix}.${field.name}`)}
-                  translate={tEditor}
-                  onChange={(value) => updateField(item.id, field.name, value)}
-                />
-              ))}
-            </div>
-          </article>
-        ))}
-      </div>
+              <div className="-mt-1 flex flex-wrap items-center justify-between gap-2">
+                <p className="truncate text-sm font-semibold">
+                  {itemTitle(item)}
+                </p>
+
+                <div className="flex gap-0.5" role="group">
+                  <Button
+                    variant="ghost"
+                    size="icon-sm"
+                    aria-label={tEditor("actions.toggleVisibility")}
+                    aria-pressed={item.visible}
+                    onClick={() =>
+                      setSectionItemVisibility(section, item.id, !item.visible)
+                    }
+                  >
+                    {item.visible ? <EyeOff /> : <Eye />}
+                  </Button>
+                  <Button
+                    variant="ghost"
+                    size="icon-sm"
+                    aria-label={tEditor("actions.moveUp")}
+                    onClick={() =>
+                      reorderSectionItems(section, index, index - 1)
+                    }
+                    disabled={index === 0}
+                  >
+                    <ArrowUp />
+                  </Button>
+                  <Button
+                    variant="ghost"
+                    size="icon-sm"
+                    aria-label={tEditor("actions.moveDown")}
+                    onClick={() =>
+                      reorderSectionItems(section, index, index + 1)
+                    }
+                    disabled={index === items.length - 1}
+                  >
+                    <ArrowDown />
+                  </Button>
+                  <Button
+                    variant="ghost"
+                    size="icon-sm"
+                    className="text-destructive hover:bg-destructive/10"
+                    aria-label={tEditor("actions.deleteItem")}
+                    onClick={() => removeSectionItem(section, item.id)}
+                  >
+                    <Trash2 />
+                  </Button>
+                </div>
+              </div>
+
+              <div
+                className={cn(
+                  "grid gap-3",
+                  config.columns === 3 ? "md:grid-cols-3" : "md:grid-cols-2",
+                )}
+              >
+                {config.fields.map((field) => (
+                  <SectionItemField
+                    key={field.name}
+                    field={field}
+                    item={item}
+                    columns={config.columns}
+                    label={tEditor(`${config.labelPrefix}.${field.name}`)}
+                    translate={tEditor}
+                    onChange={(value) =>
+                      updateField(item.id, field.name, value)
+                    }
+                  />
+                ))}
+              </div>
+            </article>
+          ))}
+        </div>
+      )}
     </section>
   );
 }
@@ -212,16 +238,20 @@ function SectionItemField({
       );
     case "checkbox":
       return (
-        <Field label={label} className={className}>
-          <span className="border-input bg-background flex h-10 items-center gap-2 rounded-lg border px-3 text-sm">
-            <input
-              type="checkbox"
-              checked={Boolean(value)}
-              onChange={(event) => onChange(event.target.checked)}
-            />
-            <span>{label}</span>
-          </span>
-        </Field>
+        <label
+          className={cn(
+            "border-input bg-card hover:bg-muted/60 flex h-9 cursor-pointer items-center gap-2 self-end rounded-md border px-2.5 text-sm shadow-xs transition-colors",
+            className,
+          )}
+        >
+          <input
+            type="checkbox"
+            className="accent-primary size-3.5"
+            checked={Boolean(value)}
+            onChange={(event) => onChange(event.target.checked)}
+          />
+          <span className="text-[0.8rem] font-medium">{label}</span>
+        </label>
       );
     case "select":
       return (

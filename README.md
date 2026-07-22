@@ -28,6 +28,7 @@ The application has no backend and no authentication. CV data is intended to liv
 - Unit tests cover schema validation, storage behavior, export filtering, the shared export content model, and core store actions.
 - Build and lint are clean.
 - The codebase was fully refactored (2026-07): section forms are config-driven, exporters render a shared content model, and duplicated UI/helpers were consolidated.
+- The interface was redesigned (2026-07): warm OKLCH palette with a terracotta accent, slim top bar, three-column workspace (section rail, flat form column, sticky preview on a recessed canvas), and export actions moved next to the preview. Design context lives in `PRODUCT.md` and `DESIGN.md`.
 
 ## Stack
 
@@ -152,6 +153,7 @@ src/
 
 - Main roadmap: `PLAN.md`
 - LLM/session context: `LLM_CONTEXT.md`
+- Product/design context: `PRODUCT.md` and `DESIGN.md`
 - Visual reference: `example.pdf`
 
 ## Notes

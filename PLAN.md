@@ -34,6 +34,7 @@
 - Template selection is persisted in the main CV document and applied consistently to preview, PDF, and DOCX.
 - Added LaTeX (.tex) export alongside PDF, DOCX, and JSON.
 - Full codebase refactor (2026-07): the seven per-section form components were replaced by a single config-driven `SectionEditor`; PDF/DOCX/LaTeX generators now render a shared export content model (`buildExportContent`) that owns filtering and section ordering; factories moved out of the types module; shared UI form controls and a download helper were extracted. Behavior, routes, i18n keys, and the data contract are unchanged.
+- Interface redesign (2026-07): warm OKLCH token palette with terracotta accent on both themes, slim sticky top bar, three-column workspace (section rail with item counts, flat de-carded form column, sticky A4 preview on a recessed canvas), export actions relocated next to the preview, denser form controls, and WCAG AA focus/contrast pass. Design context documented in `PRODUCT.md` and `DESIGN.md`.
 
 ## Data Model (High Level)
 

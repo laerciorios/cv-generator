@@ -36,9 +36,11 @@ export default async function LocaleLayout({
       disableTransitionOnChange
     >
       <NextIntlClientProvider locale={locale} messages={messages}>
-        <div className="from-background via-background to-muted/30 min-h-screen bg-linear-to-b">
+        <div className="flex min-h-screen flex-col">
           <AppHeader />
-          <main className="mx-auto w-full max-w-6xl px-4 py-6">{children}</main>
+          <main className="mx-auto w-full max-w-[100rem] flex-1 px-4 py-5 sm:px-6">
+            {children}
+          </main>
         </div>
       </NextIntlClientProvider>
     </ThemeProvider>

@@ -154,6 +154,22 @@
 - Shared form controls live in `src/components/ui` (`Field`, `Input`, `Textarea`, `Select`).
 - File downloads go through `downloadBlob` in `src/lib/download.ts`.
 
+## UI System (post-redesign)
+
+- Design context: `PRODUCT.md` (strategy/register) and `DESIGN.md` (tokens,
+  components, layout rules). Read both before visual changes.
+- Theme tokens are OKLCH in `src/app/globals.css`: warm neutrals (hue ~45-70)
+  plus a terracotta `--primary`; extra tokens `--canvas` (preview backdrop)
+  and `--success` (save state). Light and dark are both supported.
+- Workspace layout (`CVEditorWorkspace`): mobile editor/preview toggle,
+  horizontal section tabs on `lg`, three columns on `xl` (rail, form,
+  sticky preview). `SectionNav` shows per-section item counts and
+  hidden-state icons from the store.
+- Export actions render inside the preview column (`CVPreview` toolbar via
+  `ExportPanel`), not in the form column.
+- `home.subtitle`, `home.welcome*`, and `editor.preview{Title,Description}`
+  locale keys were removed with the redesign.
+
 ## Routing and i18n Details
 
 - Supported locales: `pt-br`, `en`, `es`.

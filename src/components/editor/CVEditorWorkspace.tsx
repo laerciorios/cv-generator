@@ -2,7 +2,6 @@
 
 import { useEffect, useState } from "react";
 import { useTranslations } from "next-intl";
-import { ExportPanel } from "@/components/export/ExportPanel";
 import { PersonalInfoSection } from "@/components/form/PersonalInfoSection";
 import { SectionEditor } from "@/components/form/SectionEditor";
 import {
@@ -27,56 +26,61 @@ export function CVEditorWorkspace() {
   }, [hydrate, isHydrated]);
 
   return (
-    <section className="grid gap-4">
+    <div className="flex flex-col gap-4">
       {/* Mobile-only: toggle between editor and preview */}
       <div
-        className="bg-card flex gap-1 rounded-2xl border p-1 lg:hidden"
+        className="bg-secondary flex gap-0.5 self-start rounded-lg p-0.5 lg:hidden"
         role="tablist"
         aria-label={t("mobileView.label")}
       >
-        <button
-          role="tab"
-          aria-selected={!showPreview}
-          className={cn(
-            "flex-1 rounded-xl px-3 py-2 text-sm font-medium transition-colors",
-            !showPreview
-              ? "bg-primary text-primary-foreground"
-              : "text-muted-foreground hover:text-foreground",
-          )}
-          onClick={() => setShowPreview(false)}
-        >
-          {t("mobileView.showEditor")}
-        </button>
-        <button
-          role="tab"
-          aria-selected={showPreview}
-          className={cn(
-            "flex-1 rounded-xl px-3 py-2 text-sm font-medium transition-colors",
-            showPreview
-              ? "bg-primary text-primary-foreground"
-              : "text-muted-foreground hover:text-foreground",
-          )}
-          onClick={() => setShowPreview(true)}
-        >
-          {t("mobileView.showPreview")}
-        </button>
+        {(
+          [
+            { preview: false, label: t("mobileView.showEditor") },
+            { preview: true, label: t("mobileView.showPreview") },
+          ] as const
+        ).map((tab) => (
+          <button
+            key={tab.label}
+            role="tab"
+            aria-selected={showPreview === tab.preview}
+            className={cn(
+              "focus-visible:border-ring focus-visible:ring-ring/50 rounded-md border border-transparent px-3 py-1.5 text-[0.8rem] font-medium transition-colors outline-none focus-visible:ring-3",
+              showPreview === tab.preview
+                ? "bg-card text-foreground shadow-sm"
+                : "text-muted-foreground hover:text-foreground",
+            )}
+            onClick={() => setShowPreview(tab.preview)}
+          >
+            {tab.label}
+          </button>
+        ))}
       </div>
 
-      <SectionNav activeSection={activeSection} onChange={setActiveSection} />
+      <div className="grid items-start gap-x-6 gap-y-4 lg:grid-cols-[minmax(0,26rem)_minmax(0,1fr)] xl:grid-cols-[11rem_minmax(0,26rem)_minmax(0,1fr)] 2xl:grid-cols-[12.5rem_minmax(0,30rem)_minmax(0,1fr)]">
+        <div
+          className={cn(
+            "min-w-0 lg:col-span-2 xl:sticky xl:top-16 xl:col-span-1",
+            showPreview && "hidden lg:block",
+          )}
+        >
+          <SectionNav
+            activeSection={activeSection}
+            onChange={setActiveSection}
+          />
+        </div>
 
-      <div className="grid gap-4 lg:grid-cols-[1.1fr_0.9fr]">
-        <div className={cn("grid gap-4", showPreview && "hidden lg:grid")}>
+        <div className={cn("min-w-0", showPreview && "hidden lg:block")}>
           {activeSection === "personal" ? (
             <PersonalInfoSection />
           ) : (
             <SectionEditor key={activeSection} section={activeSection} />
           )}
-          <ExportPanel />
         </div>
-        <div className={cn(!showPreview && "hidden lg:block")}>
+
+        <div className={cn("min-w-0", !showPreview && "hidden lg:block")}>
           <CVPreview />
         </div>
       </div>
-    </section>
+    </div>
   );
 }

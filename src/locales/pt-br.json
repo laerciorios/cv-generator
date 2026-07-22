@@ -108,10 +108,7 @@
     }
   },
   "home": {
-    "title": "CV Generator",
-    "subtitle": "Editor e preview de currículo em tela única",
-    "welcomeTitle": "Crie, revise e exporte seu CV",
-    "welcomeDescription": "Edite todas as seções do currículo, acompanhe o preview em tempo real e exporte em PDF, DOCX ou JSON."
+    "title": "CV Generator"
   },
   "editor": {
     "sections": {
@@ -138,8 +135,6 @@
     "untitledEducation": "Formação sem título",
     "untitledLanguage": "Idioma sem nome",
     "untitledSkill": "Habilidade sem nome",
-    "previewTitle": "Preview em tempo real",
-    "previewDescription": "Este painel reflete seus dados visíveis no estado atual.",
     "emptyName": "Seu nome completo",
     "emptyContacts": "Email, telefone e localização aparecerão aqui.",
     "emptyExperiencePreview": "Nenhum item de experiência visível ainda.",

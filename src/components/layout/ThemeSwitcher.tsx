@@ -20,7 +20,7 @@ export function ThemeSwitcher() {
   // resolvedTheme is set on the client first render but undefined on server.
   if (!mounted) {
     return (
-      <Button variant="outline" size="sm" disabled aria-hidden>
+      <Button variant="ghost" size="icon-sm" disabled aria-hidden>
         <span className="sr-only">{t("toggleTheme")}</span>
       </Button>
     );
@@ -29,13 +29,17 @@ export function ThemeSwitcher() {
   const nextTheme = resolvedTheme === "dark" ? "light" : "dark";
 
   return (
-    <Button variant="outline" size="sm" onClick={() => setTheme(nextTheme)}>
+    <Button
+      variant="ghost"
+      size="icon-sm"
+      aria-label={t("toggleTheme")}
+      onClick={() => setTheme(nextTheme)}
+    >
       {resolvedTheme === "dark" ? (
         <Sun className="size-4" />
       ) : (
         <Moon className="size-4" />
       )}
-      <span className="sr-only">{t("toggleTheme")}</span>
     </Button>
   );
 }

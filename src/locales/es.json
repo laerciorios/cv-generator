@@ -108,10 +108,7 @@
     }
   },
   "home": {
-    "title": "CV Generator",
-    "subtitle": "Editor y vista previa de CV en una sola pantalla",
-    "welcomeTitle": "Crea, revisa y exporta tu CV",
-    "welcomeDescription": "Edita todas las secciones del CV, sigue la vista previa en tiempo real y exporta en PDF, DOCX o JSON."
+    "title": "CV Generator"
   },
   "editor": {
     "sections": {
@@ -138,8 +135,6 @@
     "untitledEducation": "Formacion sin titulo",
     "untitledLanguage": "Idioma sin nombre",
     "untitledSkill": "Habilidad sin nombre",
-    "previewTitle": "Vista previa en tiempo real",
-    "previewDescription": "Este panel refleja tus datos visibles en el estado actual.",
     "emptyName": "Tu nombre completo",
     "emptyContacts": "Aqui apareceran correo, telefono y ubicacion.",
     "emptyExperiencePreview": "Aun no hay items de experiencia visibles.",

@@ -27,14 +27,11 @@ export function LanguageSwitcher() {
   }, [locale]);
 
   return (
-    <label className="flex min-w-0 items-center gap-2 text-sm font-medium">
-      <span className="text-muted-foreground hidden sm:inline">
-        {t("language")}
-      </span>
+    <label className="flex min-w-0 items-center">
       <select
         value={locale}
         aria-label={t("language")}
-        className="bg-background w-24 rounded-md border px-2 py-1 sm:w-auto"
+        className="hover:bg-muted focus-visible:border-ring focus-visible:ring-ring/50 h-7 w-24 rounded-md border border-transparent bg-transparent px-1.5 text-[0.8rem] font-medium outline-none focus-visible:ring-3 sm:w-auto"
         onChange={(event) => {
           const nextLocale = event.target.value as AppLocale;
           persistLocaleCookie(nextLocale);

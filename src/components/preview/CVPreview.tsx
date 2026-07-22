@@ -2,6 +2,7 @@
 
 import type { ReactNode } from "react";
 import { useTranslations } from "next-intl";
+import { ExportPanel } from "@/components/export/ExportPanel";
 import { useCVStore } from "@/hooks/useCVStore";
 import { EXPORT_SECTION_ORDER } from "@/lib/exporters/content";
 import { cn } from "@/lib/utils";
@@ -192,11 +193,11 @@ export function CVPreview() {
     .join(" • ");
 
   return (
-    <section className="bg-card flex flex-col gap-4 rounded-2xl border p-4 shadow-sm lg:sticky lg:top-4 lg:max-h-[calc(100vh-6rem)]">
+    <section className="flex flex-col gap-3 lg:sticky lg:top-16 lg:max-h-[calc(100vh-4.75rem)]">
       <PreviewToolbar />
 
       {/* Scrollable A4 preview area (794px wide at 96 DPI) */}
-      <div className="min-h-0 flex-1 overflow-auto rounded-lg">
+      <div className="bg-canvas min-h-0 flex-1 overflow-auto rounded-lg border p-3 sm:p-5">
         <article className={styles.article}>
           <header className={cn(styles.header, styles.headerLayout)}>
             <h1 className={styles.fullName}>
@@ -276,23 +277,13 @@ function PreviewToolbar() {
   const { document, setTemplate } = useCVStore();
 
   return (
-    <header className="shrink-0 border-b pb-3">
-      <h2 className="text-base font-semibold tracking-tight">
-        {t("previewTitle")}
-      </h2>
-      <p className="text-muted-foreground text-xs">{t("previewDescription")}</p>
-
-      <div className="mt-3 grid gap-2">
-        <div className="flex items-center justify-between gap-2">
-          <p className="text-xs font-semibold tracking-wide text-neutral-500 uppercase">
-            {t("templates.title")}
-          </p>
-          <p className="text-[11px] text-neutral-500">
-            {t("templates.atsHint")}
-          </p>
-        </div>
-
-        <div className="bg-background grid grid-cols-3 gap-1 rounded-xl border p-1">
+    <header className="flex shrink-0 flex-col gap-2.5">
+      <div className="flex flex-wrap items-center justify-between gap-x-4 gap-y-2">
+        <div
+          className="bg-secondary flex gap-0.5 rounded-lg p-0.5"
+          role="group"
+          aria-label={t("templates.title")}
+        >
           {CV_TEMPLATES.map((option) => (
             <button
               key={option}
@@ -300,9 +291,9 @@ function PreviewToolbar() {
               onClick={() => setTemplate(option)}
               aria-pressed={document.template === option}
               className={cn(
-                "rounded-lg px-2 py-1.5 text-xs font-medium transition-colors",
+                "focus-visible:border-ring focus-visible:ring-ring/50 rounded-md border border-transparent px-2.5 py-1 text-xs font-medium transition-colors outline-none focus-visible:ring-3",
                 document.template === option
-                  ? "bg-primary text-primary-foreground"
+                  ? "bg-card text-foreground shadow-sm"
                   : "text-muted-foreground hover:text-foreground",
               )}
             >
@@ -310,7 +301,13 @@ function PreviewToolbar() {
             </button>
           ))}
         </div>
+
+        <p className="text-muted-foreground font-mono text-[11px] tracking-wide uppercase">
+          {t("templates.atsHint")}
+        </p>
       </div>
+
+      <ExportPanel />
     </header>
   );
 }

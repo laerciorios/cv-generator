@@ -13,15 +13,12 @@ export function SaveStatusBadge() {
 
   return (
     <div
-      className="text-muted-foreground flex items-center gap-1.5 text-xs"
+      className="text-muted-foreground hidden items-center gap-1.5 font-mono text-[11px] tracking-wide uppercase sm:flex"
       role="status"
       aria-live="polite"
       aria-label={t("saveStatus.saved")}
     >
-      <span
-        className="h-1.5 w-1.5 rounded-full bg-green-500"
-        aria-hidden="true"
-      />
+      <span className="bg-success size-1.5 rounded-full" aria-hidden="true" />
       {t("saveStatus.saved")}
     </div>
   );

@@ -52,6 +52,7 @@ const EXPORT_ACTIONS: readonly ExportAction[] = [
   },
 ];
 
+/** Compact export action row, rendered next to the document preview. */
 export function ExportPanel() {
   const t = useTranslations("export");
   const tEditor = useTranslations("editor");
@@ -65,13 +66,8 @@ export function ExportPanel() {
   };
 
   return (
-    <section className="bg-card grid gap-4 rounded-2xl border p-6 shadow-sm">
-      <div>
-        <h2 className="text-xl font-semibold tracking-tight">{t("title")}</h2>
-        <p className="text-muted-foreground text-sm">{t("description")}</p>
-      </div>
-
-      <div className="flex flex-wrap gap-2">
+    <div className="flex flex-col gap-2" role="group" aria-label={t("title")}>
+      <div className="flex flex-wrap items-center gap-1.5">
         {EXPORT_ACTIONS.map((action) => {
           const Icon = action.icon;
           const isLoading = loading === action.format;
@@ -79,6 +75,7 @@ export function ExportPanel() {
           return (
             <Button
               key={action.format}
+              size="sm"
               variant={action.variant}
               onClick={() =>
                 exportDocument(action.format, labels, t(action.filenameKey))
@@ -86,7 +83,7 @@ export function ExportPanel() {
               disabled={loading !== null}
             >
               {isLoading ? (
-                <span className="h-4 w-4 animate-spin rounded-full border-2 border-current border-t-transparent" />
+                <span className="size-3.5 animate-spin rounded-full border-2 border-current border-t-transparent" />
               ) : (
                 <Icon />
               )}
@@ -97,10 +94,10 @@ export function ExportPanel() {
       </div>
 
       {error ? (
-        <p className="text-destructive rounded-lg border border-current px-3 py-2 text-sm">
+        <p className="text-destructive bg-destructive/10 rounded-md px-3 py-2 text-[0.8rem]">
           {error}
         </p>
       ) : null}
-    </section>
+    </div>
   );
 }

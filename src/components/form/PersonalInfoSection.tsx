@@ -48,21 +48,21 @@ export function PersonalInfoSection() {
   }
 
   return (
-    <section className="bg-card grid gap-4 rounded-2xl border p-6 shadow-sm">
-      <div>
-        <h2 className="text-xl font-semibold tracking-tight">
+    <section className="flex flex-col gap-5">
+      <header className="border-b pb-4">
+        <h2 className="text-lg font-semibold tracking-tight">
           {tEditor("sections.personal")}
         </h2>
-        <p className="text-muted-foreground text-sm">
+        <p className="text-muted-foreground mt-0.5 text-[0.8rem]">
           {tEditor("personalDescription")}
         </p>
-      </div>
+      </header>
 
-      <div className="grid gap-4 md:grid-cols-2">
+      <div className="grid gap-3 md:grid-cols-2">
         {CONTACT_FIELDS.map(renderField)}
       </div>
 
-      <div className="grid gap-4 md:grid-cols-3">
+      <div className="grid gap-3 md:grid-cols-3">
         {LINK_FIELDS.map(renderField)}
       </div>
 
