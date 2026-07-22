@@ -2,20 +2,22 @@
 
 import { useState } from "react";
 import { useCVStore } from "@/hooks/useCVStore";
-import { generateAndDownloadPDF } from "@/lib/exporters/pdf.generator";
+import { downloadBlob } from "@/lib/download";
 import { generateAndDownloadDOCX } from "@/lib/exporters/docx.generator";
-import { generateAndDownloadLatex } from "@/lib/exporters/latex.generator";
 import type { ExportLabels } from "@/lib/exporters/filter";
+import { generateAndDownloadLatex } from "@/lib/exporters/latex.generator";
+import { generateAndDownloadPDF } from "@/lib/exporters/pdf.generator";
 
-type ExportFormat = "pdf" | "docx" | "latex";
+export type ExportFormat = "pdf" | "docx" | "latex" | "json";
 
 interface UseExportReturn {
   loading: ExportFormat | null;
   error: string | null;
-  exportPDF: (labels: ExportLabels, filename: string) => Promise<void>;
-  exportDOCX: (labels: ExportLabels, filename: string) => Promise<void>;
-  exportLatex: (labels: ExportLabels, filename: string) => Promise<void>;
-  exportJSON: (filename: string) => void;
+  exportDocument: (
+    format: ExportFormat,
+    labels: ExportLabels,
+    filename: string,
+  ) => Promise<void>;
 }
 
 export function useExport(): UseExportReturn {
@@ -23,14 +25,32 @@ export function useExport(): UseExportReturn {
   const [loading, setLoading] = useState<ExportFormat | null>(null);
   const [error, setError] = useState<string | null>(null);
 
-  async function exportPDF(
+  async function exportDocument(
+    format: ExportFormat,
     labels: ExportLabels,
     filename: string,
   ): Promise<void> {
-    setLoading("pdf");
+    setLoading(format);
     setError(null);
+
     try {
-      await generateAndDownloadPDF(document, labels, filename);
+      switch (format) {
+        case "pdf":
+          await generateAndDownloadPDF(document, labels, filename);
+          break;
+        case "docx":
+          await generateAndDownloadDOCX(document, labels, filename);
+          break;
+        case "latex":
+          generateAndDownloadLatex(document, labels, filename);
+          break;
+        case "json":
+          downloadBlob(
+            new Blob([exportToJson()], { type: "application/json" }),
+            filename,
+          );
+          break;
+      }
     } catch (err) {
       setError(err instanceof Error ? err.message : String(err));
     } finally {
@@ -38,46 +58,5 @@ export function useExport(): UseExportReturn {
     }
   }
 
-  async function exportDOCX(
-    labels: ExportLabels,
-    filename: string,
-  ): Promise<void> {
-    setLoading("docx");
-    setError(null);
-    try {
-      await generateAndDownloadDOCX(document, labels, filename);
-    } catch (err) {
-      setError(err instanceof Error ? err.message : String(err));
-    } finally {
-      setLoading(null);
-    }
-  }
-
-  async function exportLatex(
-    labels: ExportLabels,
-    filename: string,
-  ): Promise<void> {
-    setLoading("latex");
-    setError(null);
-    try {
-      generateAndDownloadLatex(document, labels, filename);
-    } catch (err) {
-      setError(err instanceof Error ? err.message : String(err));
-    } finally {
-      setLoading(null);
-    }
-  }
-
-  function exportJSON(filename: string): void {
-    const json = exportToJson();
-    const blob = new Blob([json], { type: "application/json" });
-    const url = URL.createObjectURL(blob);
-    const a = window.document.createElement("a");
-    a.href = url;
-    a.download = filename;
-    a.click();
-    URL.revokeObjectURL(url);
-  }
-
-  return { loading, error, exportPDF, exportDOCX, exportLatex, exportJSON };
+  return { loading, error, exportDocument };
 }

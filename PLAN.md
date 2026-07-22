@@ -32,6 +32,8 @@
 
 - Added 3 ATS-oriented CV templates selectable by the user (`classic`, `compact`, `executive`).
 - Template selection is persisted in the main CV document and applied consistently to preview, PDF, and DOCX.
+- Added LaTeX (.tex) export alongside PDF, DOCX, and JSON.
+- Full codebase refactor (2026-07): the seven per-section form components were replaced by a single config-driven `SectionEditor`; PDF/DOCX/LaTeX generators now render a shared export content model (`buildExportContent`) that owns filtering and section ordering; factories moved out of the types module; shared UI form controls and a download helper were extracted. Behavior, routes, i18n keys, and the data contract are unchanged.
 
 ## Data Model (High Level)
 

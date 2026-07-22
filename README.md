@@ -25,8 +25,9 @@ The application has no backend and no authentication. CV data is intended to liv
 - All CV sections are editable with per-section and per-item visibility plus item ordering.
 - Preview/export parity is enforced through a shared visibility filter.
 - The editor includes 3 ATS-friendly templates (`classic`, `compact`, `executive`) applied to preview, PDF, and DOCX.
-- Unit tests cover schema validation, storage behavior, export filtering, and core store actions.
+- Unit tests cover schema validation, storage behavior, export filtering, the shared export content model, and core store actions.
 - Build and lint are clean.
+- The codebase was fully refactored (2026-07): section forms are config-driven, exporters render a shared content model, and duplicated UI/helpers were consolidated.
 
 ## Stack
 
@@ -80,18 +81,14 @@ src/
       CVEditorWorkspace.tsx
     form/
       PersonalInfoSection.tsx
-      ExperienceSection.tsx
-      EducationSection.tsx
-      LanguagesSection.tsx
-      SkillsSection.tsx
-      VolunteerSection.tsx
-      ProjectsSection.tsx
-      ExtrasSection.tsx
+      SectionEditor.tsx          # config-driven editor for all list sections
+      section-form-configs.ts    # per-section field/label configuration
     export/
       ExportPanel.tsx
     layout/
       AppHeader.tsx
       LanguageSwitcher.tsx
+      SaveStatusBadge.tsx
       SectionNav.tsx
       ThemeSwitcher.tsx
     preview/
@@ -100,24 +97,43 @@ src/
       theme-provider.tsx
     ui/
       button.tsx
+      field.tsx
+      input.tsx
+      select.tsx
+      textarea.tsx
   hooks/
     useCVStore.ts
+    useExport.ts
   i18n/
     navigation.ts
     request.ts
     routing.ts
   lib/
+    cv-factories.ts              # document/item factories and sample data
+    download.ts                  # shared browser download helper
     schemas.ts
     storage.ts
     utils.ts
+    exporters/
+      content.ts                 # shared format-agnostic export model
+      filter.ts
+      pdf.generator.ts
+      docx.generator.ts
+      latex.generator.ts
   types/
-    cv.types.ts
+    cv.types.ts                  # data contract (types and constants only)
   locales/
     pt-br.json
     en.json
     es.json
   proxy.ts
 ```
+
+## Architecture Notes
+
+- All seven list-based sections (experience, education, languages, skills, volunteer, projects, extras) are edited through a single `SectionEditor` component driven by `section-form-configs.ts`.
+- Exporters share `buildExportContent` (`src/lib/exporters/content.ts`), which owns visibility filtering, section ordering, and document traversal; PDF, DOCX, and LaTeX generators are pure renderers of that model, keeping output parity by construction.
+- The preview mirrors the same section order via `EXPORT_SECTION_ORDER`.
 
 ## Localization
 

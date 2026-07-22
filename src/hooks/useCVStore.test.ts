@@ -1,6 +1,6 @@
 import { CV_DOCUMENT_STORAGE_KEY } from "@/lib/storage";
 import { useCVStore } from "@/hooks/useCVStore";
-import { createSampleCVDocument } from "@/types/cv.types";
+import { createSampleCVDocument } from "@/lib/cv-factories";
 
 function resetStore() {
   useCVStore.setState(useCVStore.getInitialState(), true);

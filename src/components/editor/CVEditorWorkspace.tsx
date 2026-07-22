@@ -3,20 +3,14 @@
 import { useEffect, useState } from "react";
 import { useTranslations } from "next-intl";
 import { ExportPanel } from "@/components/export/ExportPanel";
-import { EducationSection } from "@/components/form/EducationSection";
-import { ExtrasSection } from "@/components/form/ExtrasSection";
 import { PersonalInfoSection } from "@/components/form/PersonalInfoSection";
-import { ExperienceSection } from "@/components/form/ExperienceSection";
-import { LanguagesSection } from "@/components/form/LanguagesSection";
-import { ProjectsSection } from "@/components/form/ProjectsSection";
-import { SkillsSection } from "@/components/form/SkillsSection";
-import { VolunteerSection } from "@/components/form/VolunteerSection";
-import { useCVStore } from "@/hooks/useCVStore";
+import { SectionEditor } from "@/components/form/SectionEditor";
 import {
   SectionNav,
   type EditorSectionKey,
 } from "@/components/layout/SectionNav";
 import { CVPreview } from "@/components/preview/CVPreview";
+import { useCVStore } from "@/hooks/useCVStore";
 import { cn } from "@/lib/utils";
 
 export function CVEditorWorkspace() {
@@ -72,14 +66,11 @@ export function CVEditorWorkspace() {
 
       <div className="grid gap-4 lg:grid-cols-[1.1fr_0.9fr]">
         <div className={cn("grid gap-4", showPreview && "hidden lg:grid")}>
-          {activeSection === "personal" ? <PersonalInfoSection /> : null}
-          {activeSection === "experience" ? <ExperienceSection /> : null}
-          {activeSection === "education" ? <EducationSection /> : null}
-          {activeSection === "languages" ? <LanguagesSection /> : null}
-          {activeSection === "skills" ? <SkillsSection /> : null}
-          {activeSection === "volunteer" ? <VolunteerSection /> : null}
-          {activeSection === "projects" ? <ProjectsSection /> : null}
-          {activeSection === "extras" ? <ExtrasSection /> : null}
+          {activeSection === "personal" ? (
+            <PersonalInfoSection />
+          ) : (
+            <SectionEditor key={activeSection} section={activeSection} />
+          )}
           <ExportPanel />
         </div>
         <div className={cn(!showPreview && "hidden lg:block")}>

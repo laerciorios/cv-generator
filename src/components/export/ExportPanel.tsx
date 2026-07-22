@@ -1,26 +1,66 @@
 "use client";
 
-import { FileCode2, FileDown, FileJson, FileType } from "lucide-react";
+import {
+  FileCode2,
+  FileDown,
+  FileJson,
+  FileType,
+  type LucideIcon,
+} from "lucide-react";
 import { useTranslations } from "next-intl";
 import { Button } from "@/components/ui/button";
-import { useExport } from "@/hooks/useExport";
+import { useExport, type ExportFormat } from "@/hooks/useExport";
+import { CV_SECTION_KEYS } from "@/types/cv.types";
+import type { ExportSectionLabels } from "@/lib/exporters/filter";
+
+interface ExportAction {
+  format: ExportFormat;
+  icon: LucideIcon;
+  labelKey: string;
+  filenameKey: string;
+  variant: "default" | "outline";
+}
+
+const EXPORT_ACTIONS: readonly ExportAction[] = [
+  {
+    format: "pdf",
+    icon: FileDown,
+    labelKey: "actions.exportPdf",
+    filenameKey: "filenamePdf",
+    variant: "default",
+  },
+  {
+    format: "docx",
+    icon: FileType,
+    labelKey: "actions.exportDocx",
+    filenameKey: "filenameDocx",
+    variant: "outline",
+  },
+  {
+    format: "latex",
+    icon: FileCode2,
+    labelKey: "actions.exportLatex",
+    filenameKey: "filenameLatex",
+    variant: "outline",
+  },
+  {
+    format: "json",
+    icon: FileJson,
+    labelKey: "actions.exportJson",
+    filenameKey: "filenameJson",
+    variant: "outline",
+  },
+];
 
 export function ExportPanel() {
   const t = useTranslations("export");
   const tEditor = useTranslations("editor");
-  const { loading, error, exportPDF, exportDOCX, exportLatex, exportJSON } =
-    useExport();
+  const { loading, error, exportDocument } = useExport();
 
   const labels = {
-    sections: {
-      experience: tEditor("sections.experience"),
-      education: tEditor("sections.education"),
-      skills: tEditor("sections.skills"),
-      languages: tEditor("sections.languages"),
-      volunteer: tEditor("sections.volunteer"),
-      projects: tEditor("sections.projects"),
-      extras: tEditor("sections.extras"),
-    },
+    sections: Object.fromEntries(
+      CV_SECTION_KEYS.map((key) => [key, tEditor(`sections.${key}`)]),
+    ) as ExportSectionLabels,
     current: tEditor("current"),
   };
 
@@ -32,52 +72,28 @@ export function ExportPanel() {
       </div>
 
       <div className="flex flex-wrap gap-2">
-        <Button
-          onClick={() => exportPDF(labels, t("filenamePdf"))}
-          disabled={loading !== null}
-        >
-          {loading === "pdf" ? (
-            <span className="h-4 w-4 animate-spin rounded-full border-2 border-current border-t-transparent" />
-          ) : (
-            <FileDown />
-          )}
-          {loading === "pdf" ? t("loading") : t("actions.exportPdf")}
-        </Button>
+        {EXPORT_ACTIONS.map((action) => {
+          const Icon = action.icon;
+          const isLoading = loading === action.format;
 
-        <Button
-          variant="outline"
-          onClick={() => exportDOCX(labels, t("filenameDocx"))}
-          disabled={loading !== null}
-        >
-          {loading === "docx" ? (
-            <span className="h-4 w-4 animate-spin rounded-full border-2 border-current border-t-transparent" />
-          ) : (
-            <FileType />
-          )}
-          {loading === "docx" ? t("loading") : t("actions.exportDocx")}
-        </Button>
-
-        <Button
-          variant="outline"
-          onClick={() => exportLatex(labels, t("filenameLatex"))}
-          disabled={loading !== null}
-        >
-          {loading === "latex" ? (
-            <span className="h-4 w-4 animate-spin rounded-full border-2 border-current border-t-transparent" />
-          ) : (
-            <FileCode2 />
-          )}
-          {loading === "latex" ? t("loading") : t("actions.exportLatex")}
-        </Button>
-
-        <Button
-          variant="outline"
-          onClick={() => exportJSON(t("filenameJson"))}
-          disabled={loading !== null}
-        >
-          <FileJson />
-          {t("actions.exportJson")}
-        </Button>
+          return (
+            <Button
+              key={action.format}
+              variant={action.variant}
+              onClick={() =>
+                exportDocument(action.format, labels, t(action.filenameKey))
+              }
+              disabled={loading !== null}
+            >
+              {isLoading ? (
+                <span className="h-4 w-4 animate-spin rounded-full border-2 border-current border-t-transparent" />
+              ) : (
+                <Icon />
+              )}
+              {isLoading ? t("loading") : t(action.labelKey)}
+            </Button>
+          );
+        })}
       </div>
 
       {error ? (

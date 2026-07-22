@@ -1,6 +1,7 @@
 "use client";
 
 import { create } from "zustand";
+import { createEmptyCVDocument, createSectionItem } from "@/lib/cv-factories";
 import {
   exportCVDocumentToJson,
   importCVDocumentFromJson,
@@ -10,13 +11,14 @@ import {
 } from "@/lib/storage";
 import {
   CV_SCHEMA_VERSION,
-  createEmptyCVDocument,
-  createSectionItem,
+  type BaseSectionItem,
   type CVDocument,
+  type CVSections,
   type CVSectionKey,
   type CVTemplate,
   type PersonalInfo,
   type SectionItemMap,
+  type SectionState,
 } from "@/types/cv.types";
 
 interface ImportActionResult {
@@ -72,6 +74,26 @@ function touchDocument(document: CVDocument): CVDocument {
   };
 }
 
+type AnySectionState = SectionState<BaseSectionItem>;
+
+/**
+ * Internally the section state is handled through the BaseSectionItem shape;
+ * the strictly typed store API guarantees callers pass matching items.
+ */
+function withSection(
+  document: CVDocument,
+  section: CVSectionKey,
+  update: (state: AnySectionState) => AnySectionState,
+): CVDocument {
+  return {
+    ...document,
+    sections: {
+      ...document.sections,
+      [section]: update(document.sections[section] as AnySectionState),
+    } as CVSections,
+  };
+}
+
 export const useCVStore = create<CVStoreState>((set, get) => {
   function persistDocument(document: CVDocument) {
     const saveResult = saveCVDocumentToStorage(document);
@@ -83,6 +105,17 @@ export const useCVStore = create<CVStoreState>((set, get) => {
       storageErrorCode: saveResult.errorCode,
       storageErrorDetails: null,
     });
+  }
+
+  function commitDocument(document: CVDocument) {
+    persistDocument(touchDocument(document));
+  }
+
+  function commitSection(
+    section: CVSectionKey,
+    update: (state: AnySectionState) => AnySectionState,
+  ) {
+    commitDocument(withSection(get().document, section, update));
   }
 
   return {
@@ -108,21 +141,19 @@ export const useCVStore = create<CVStoreState>((set, get) => {
     },
 
     replaceDocument: (document) => {
-      persistDocument(touchDocument(document));
+      commitDocument(document);
     },
 
     updatePersonalInfo: (updates) => {
       const currentDocument = get().document;
 
-      persistDocument(
-        touchDocument({
-          ...currentDocument,
-          personalInfo: {
-            ...currentDocument.personalInfo,
-            ...updates,
-          },
-        }),
-      );
+      commitDocument({
+        ...currentDocument,
+        personalInfo: {
+          ...currentDocument.personalInfo,
+          ...updates,
+        },
+      });
     },
 
     setTemplate: (template) => {
@@ -132,137 +163,69 @@ export const useCVStore = create<CVStoreState>((set, get) => {
         return;
       }
 
-      persistDocument(
-        touchDocument({
-          ...currentDocument,
-          template,
-        }),
-      );
+      commitDocument({ ...currentDocument, template });
     },
 
     setSectionVisibility: (section, visible) => {
-      const currentDocument = get().document;
-
-      persistDocument(
-        touchDocument({
-          ...currentDocument,
-          sections: {
-            ...currentDocument.sections,
-            [section]: {
-              ...currentDocument.sections[section],
-              visible,
-            },
-          },
-        }),
-      );
+      commitSection(section, (state) => ({ ...state, visible }));
     },
 
     addSectionItem: (section, overrides = {}) => {
-      const currentDocument = get().document;
       const item = createSectionItem(section, overrides);
 
-      persistDocument(
-        touchDocument({
-          ...currentDocument,
-          sections: {
-            ...currentDocument.sections,
-            [section]: {
-              ...currentDocument.sections[section],
-              items: [...currentDocument.sections[section].items, item],
-            },
-          },
-        }),
-      );
+      commitSection(section, (state) => ({
+        ...state,
+        items: [...state.items, item],
+      }));
 
       return item.id;
     },
 
     updateSectionItem: (section, itemId, updates) => {
-      const currentDocument = get().document;
-
-      persistDocument(
-        touchDocument({
-          ...currentDocument,
-          sections: {
-            ...currentDocument.sections,
-            [section]: {
-              ...currentDocument.sections[section],
-              items: currentDocument.sections[section].items.map((item) =>
-                item.id === itemId ? { ...item, ...updates } : item,
-              ),
-            },
-          },
-        }),
-      );
+      commitSection(section, (state) => ({
+        ...state,
+        items: state.items.map((item) =>
+          item.id === itemId ? { ...item, ...updates } : item,
+        ),
+      }));
     },
 
     removeSectionItem: (section, itemId) => {
-      const currentDocument = get().document;
-
-      persistDocument(
-        touchDocument({
-          ...currentDocument,
-          sections: {
-            ...currentDocument.sections,
-            [section]: {
-              ...currentDocument.sections[section],
-              items: currentDocument.sections[section].items.filter(
-                (item) => item.id !== itemId,
-              ),
-            },
-          },
-        }),
-      );
+      commitSection(section, (state) => ({
+        ...state,
+        items: state.items.filter((item) => item.id !== itemId),
+      }));
     },
 
     reorderSectionItems: (section, fromIndex, toIndex) => {
-      const currentDocument = get().document;
-      const items = [...currentDocument.sections[section].items];
+      const itemCount = get().document.sections[section].items.length;
 
       if (
         fromIndex < 0 ||
         toIndex < 0 ||
-        fromIndex >= items.length ||
-        toIndex >= items.length ||
+        fromIndex >= itemCount ||
+        toIndex >= itemCount ||
         fromIndex === toIndex
       ) {
         return;
       }
 
-      const [movedItem] = items.splice(fromIndex, 1);
-      items.splice(toIndex, 0, movedItem);
+      commitSection(section, (state) => {
+        const items = [...state.items];
+        const [movedItem] = items.splice(fromIndex, 1);
+        items.splice(toIndex, 0, movedItem);
 
-      persistDocument(
-        touchDocument({
-          ...currentDocument,
-          sections: {
-            ...currentDocument.sections,
-            [section]: {
-              ...currentDocument.sections[section],
-              items,
-            },
-          },
-        }),
-      );
+        return { ...state, items };
+      });
     },
 
     setSectionItemVisibility: (section, itemId, visible) => {
-      const currentDocument = get().document;
-
-      persistDocument(
-        touchDocument({
-          ...currentDocument,
-          sections: {
-            ...currentDocument.sections,
-            [section]: {
-              ...currentDocument.sections[section],
-              items: currentDocument.sections[section].items.map((item) =>
-                item.id === itemId ? { ...item, visible } : item,
-              ),
-            },
-          },
-        }),
-      );
+      commitSection(section, (state) => ({
+        ...state,
+        items: state.items.map((item) =>
+          item.id === itemId ? { ...item, visible } : item,
+        ),
+      }));
     },
 
     exportToJson: () => {
@@ -285,7 +248,7 @@ export const useCVStore = create<CVStoreState>((set, get) => {
         };
       }
 
-      persistDocument(touchDocument(result.document));
+      commitDocument(result.document);
 
       return {
         ok: true,
@@ -295,8 +258,7 @@ export const useCVStore = create<CVStoreState>((set, get) => {
     },
 
     resetDocument: () => {
-      const nextDocument = createEmptyCVDocument();
-      persistDocument(nextDocument);
+      persistDocument(createEmptyCVDocument());
     },
   };
 });

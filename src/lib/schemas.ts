@@ -127,8 +127,8 @@ export const cvDocumentSchema: z.ZodType<CVDocument> = z.object({
     extras: sectionStateSchema(extraItemSchema),
   }),
   metadata: z.object({
-    createdAt: z.string().datetime(),
-    updatedAt: z.string().datetime(),
+    createdAt: z.iso.datetime(),
+    updatedAt: z.iso.datetime(),
     schemaVersion: z.literal(CV_SCHEMA_VERSION),
   }),
 });

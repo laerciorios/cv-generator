@@ -98,18 +98,14 @@
     - CVEditorWorkspace.tsx
   - form/
     - PersonalInfoSection.tsx
-    - ExperienceSection.tsx
-    - EducationSection.tsx
-    - LanguagesSection.tsx
-    - SkillsSection.tsx
-    - VolunteerSection.tsx
-    - ProjectsSection.tsx
-    - ExtrasSection.tsx
+    - SectionEditor.tsx (config-driven editor shared by all list sections)
+    - section-form-configs.ts (per-section field/label configuration)
   - export/
     - ExportPanel.tsx
   - layout/
     - AppHeader.tsx
     - LanguageSwitcher.tsx
+    - SaveStatusBadge.tsx
     - SectionNav.tsx
     - ThemeSwitcher.tsx
   - preview/
@@ -118,6 +114,10 @@
     - theme-provider.tsx
   - ui/
     - button.tsx
+    - field.tsx
+    - input.tsx
+    - select.tsx
+    - textarea.tsx
 - hooks/
   - useCVStore.ts
   - useExport.ts
@@ -130,16 +130,29 @@
   - en.json
   - es.json
 - lib/
+  - cv-factories.ts (document/item factories and sample data)
+  - download.ts (shared browser download helper)
   - schemas.ts
   - storage.ts
   - utils.ts
   - exporters/
+    - content.ts (shared format-agnostic export model)
     - filter.ts
     - pdf.generator.ts
     - docx.generator.ts
+    - latex.generator.ts
 - types/
-  - cv.types.ts
+  - cv.types.ts (data contract: types and constants only)
 - proxy.ts
+
+## Architecture Conventions (post-refactor)
+
+- `src/types/cv.types.ts` holds only types and constants; runtime factories live in `src/lib/cv-factories.ts`.
+- All list-based sections are edited through `SectionEditor` + `SECTION_FORM_CONFIGS`; add new section fields by editing the config, not by creating new form components.
+- `buildExportContent` in `src/lib/exporters/content.ts` owns export traversal, visibility filtering, and section ordering (`EXPORT_SECTION_ORDER`); PDF/DOCX/LaTeX generators only render that model. Add new export data there so every format stays in parity.
+- The preview consumes `EXPORT_SECTION_ORDER` to mirror export section ordering.
+- Shared form controls live in `src/components/ui` (`Field`, `Input`, `Textarea`, `Select`).
+- File downloads go through `downloadBlob` in `src/lib/download.ts`.
 
 ## Routing and i18n Details
 

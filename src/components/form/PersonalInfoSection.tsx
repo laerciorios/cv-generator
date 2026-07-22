@@ -1,21 +1,50 @@
 "use client";
 
 import { useTranslations } from "next-intl";
+import { Field } from "@/components/ui/field";
+import { Input } from "@/components/ui/input";
+import { Textarea } from "@/components/ui/textarea";
 import { useCVStore } from "@/hooks/useCVStore";
 import type { PersonalInfo } from "@/types/cv.types";
 
-const inputClassName =
-  "border-input bg-background ring-offset-background placeholder:text-muted-foreground focus-visible:ring-ring/50 flex h-10 w-full rounded-lg border px-3 py-2 text-sm outline-none transition focus-visible:ring-3";
+interface PersonalFieldConfig {
+  name: keyof PersonalInfo;
+  type?: "email" | "tel" | "url";
+  autoComplete?: string;
+}
 
-const textareaClassName = `${inputClassName} min-h-28 resize-y py-3`;
+const CONTACT_FIELDS: readonly PersonalFieldConfig[] = [
+  { name: "fullName" },
+  { name: "email", type: "email", autoComplete: "email" },
+  { name: "phone", type: "tel", autoComplete: "tel" },
+  { name: "location" },
+];
+
+const LINK_FIELDS: readonly PersonalFieldConfig[] = [
+  { name: "website", type: "url", autoComplete: "url" },
+  { name: "linkedIn", type: "url" },
+  { name: "github", type: "url" },
+];
 
 export function PersonalInfoSection() {
   const tForm = useTranslations("form");
   const tEditor = useTranslations("editor");
   const { document, updatePersonalInfo } = useCVStore();
 
-  function updateField(field: keyof PersonalInfo, value: string) {
-    updatePersonalInfo({ [field]: value });
+  function renderField(field: PersonalFieldConfig) {
+    return (
+      <Field key={field.name} label={tForm(`labels.${field.name}`)}>
+        <Input
+          type={field.type}
+          autoComplete={field.autoComplete}
+          placeholder={tForm(`placeholders.${field.name}`)}
+          value={document.personalInfo[field.name] ?? ""}
+          onChange={(event) =>
+            updatePersonalInfo({ [field.name]: event.target.value })
+          }
+        />
+      </Field>
+    );
   }
 
   return (
@@ -30,102 +59,23 @@ export function PersonalInfoSection() {
       </div>
 
       <div className="grid gap-4 md:grid-cols-2">
-        <label className="grid gap-2">
-          <span className="text-sm font-medium">
-            {tForm("labels.fullName")}
-          </span>
-          <input
-            className={inputClassName}
-            placeholder={tForm("placeholders.fullName")}
-            value={document.personalInfo.fullName}
-            onChange={(event) => updateField("fullName", event.target.value)}
-          />
-        </label>
-
-        <label className="grid gap-2">
-          <span className="text-sm font-medium">{tForm("labels.email")}</span>
-          <input
-            type="email"
-            autoComplete="email"
-            className={inputClassName}
-            placeholder={tForm("placeholders.email")}
-            value={document.personalInfo.email}
-            onChange={(event) => updateField("email", event.target.value)}
-          />
-        </label>
-
-        <label className="grid gap-2">
-          <span className="text-sm font-medium">{tForm("labels.phone")}</span>
-          <input
-            type="tel"
-            autoComplete="tel"
-            className={inputClassName}
-            placeholder={tForm("placeholders.phone")}
-            value={document.personalInfo.phone ?? ""}
-            onChange={(event) => updateField("phone", event.target.value)}
-          />
-        </label>
-
-        <label className="grid gap-2">
-          <span className="text-sm font-medium">
-            {tForm("labels.location")}
-          </span>
-          <input
-            className={inputClassName}
-            placeholder={tForm("placeholders.location")}
-            value={document.personalInfo.location ?? ""}
-            onChange={(event) => updateField("location", event.target.value)}
-          />
-        </label>
+        {CONTACT_FIELDS.map(renderField)}
       </div>
 
       <div className="grid gap-4 md:grid-cols-3">
-        <label className="grid gap-2">
-          <span className="text-sm font-medium">{tForm("labels.website")}</span>
-          <input
-            type="url"
-            autoComplete="url"
-            className={inputClassName}
-            placeholder={tForm("placeholders.website")}
-            value={document.personalInfo.website ?? ""}
-            onChange={(event) => updateField("website", event.target.value)}
-          />
-        </label>
-
-        <label className="grid gap-2">
-          <span className="text-sm font-medium">
-            {tForm("labels.linkedIn")}
-          </span>
-          <input
-            type="url"
-            className={inputClassName}
-            placeholder={tForm("placeholders.linkedIn")}
-            value={document.personalInfo.linkedIn ?? ""}
-            onChange={(event) => updateField("linkedIn", event.target.value)}
-          />
-        </label>
-
-        <label className="grid gap-2">
-          <span className="text-sm font-medium">{tForm("labels.github")}</span>
-          <input
-            type="url"
-            className={inputClassName}
-            placeholder={tForm("placeholders.github")}
-            value={document.personalInfo.github ?? ""}
-            onChange={(event) => updateField("github", event.target.value)}
-          />
-        </label>
+        {LINK_FIELDS.map(renderField)}
       </div>
 
-      <label className="grid gap-2">
-        <span className="text-sm font-medium">{tForm("labels.summary")}</span>
-        <textarea
-          className={textareaClassName}
+      <Field label={tForm("labels.summary")}>
+        <Textarea
+          className="min-h-28"
           placeholder={tForm("placeholders.summary")}
           value={document.personalInfo.summary ?? ""}
-          onChange={(event) => updateField("summary", event.target.value)}
+          onChange={(event) =>
+            updatePersonalInfo({ summary: event.target.value })
+          }
         />
-      </label>
+      </Field>
     </section>
   );
 }

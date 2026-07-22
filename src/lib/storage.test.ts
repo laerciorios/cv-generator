@@ -5,7 +5,7 @@ import {
   loadCVDocumentFromStorage,
   saveCVDocumentToStorage,
 } from "@/lib/storage";
-import { createSampleCVDocument } from "@/types/cv.types";
+import { createSampleCVDocument } from "@/lib/cv-factories";
 
 describe("storage", () => {
   it("returns fallback document when storage is empty", () => {

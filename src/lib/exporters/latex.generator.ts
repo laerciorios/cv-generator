@@ -1,6 +1,14 @@
+import { downloadBlob } from "@/lib/download";
 import type { CVDocument } from "@/types/cv.types";
+import {
+  buildExportContent,
+  formatDateRange,
+  nonEmpty,
+  type ExportContent,
+  type ExportEntry,
+  type ExportSection,
+} from "./content";
 import type { ExportLabels } from "./filter";
-import { filterCVForExport } from "./filter";
 
 /**
  * Generates a LaTeX source file (.tex) from the current CV document and
@@ -11,55 +19,49 @@ export function generateAndDownloadLatex(
   labels: ExportLabels,
   filename: string,
 ): void {
-  const filtered = filterCVForExport(doc);
-  const latex = buildLatexDocument(filtered, labels);
+  const content = buildExportContent(doc, labels);
+  const latex = renderLatexDocument(content);
 
-  const blob = new Blob([latex], { type: "application/x-tex" });
-  triggerDownload(blob, filename);
+  downloadBlob(new Blob([latex], { type: "application/x-tex" }), filename);
 }
 
-function buildLatexDocument(doc: CVDocument, labels: ExportLabels): string {
-  const { personalInfo, sections } = doc;
-  const lines: string[] = [];
-
-  lines.push("\\documentclass[11pt,a4paper]{article}");
-  lines.push("\\usepackage[utf8]{inputenc}");
-  lines.push("\\usepackage[T1]{fontenc}");
-  lines.push("\\usepackage[margin=1.8cm]{geometry}");
-  lines.push("\\usepackage[hidelinks]{hyperref}");
-  lines.push("\\usepackage{enumitem}");
-  lines.push(
+function renderLatexDocument(content: ExportContent): string {
+  const lines: string[] = [
+    "\\documentclass[11pt,a4paper]{article}",
+    "\\usepackage[utf8]{inputenc}",
+    "\\usepackage[T1]{fontenc}",
+    "\\usepackage[margin=1.8cm]{geometry}",
+    "\\usepackage[hidelinks]{hyperref}",
+    "\\usepackage{enumitem}",
     "\\setlist[itemize]{leftmargin=1.2em, itemsep=0.2em, topsep=0.2em}",
-  );
-  lines.push("\\setlength{\\parindent}{0pt}");
-  lines.push("\\setlength{\\parskip}{0.35em}");
-  lines.push("\\begin{document}");
+    "\\setlength{\\parindent}{0pt}",
+    "\\setlength{\\parskip}{0.35em}",
+    "\\begin{document}",
+  ];
 
-  if (personalInfo.fullName) {
-    lines.push(`{\\LARGE \\textbf{${escapeLatex(personalInfo.fullName)}}}\\\\`);
-  } else {
-    lines.push("{\\LARGE \\textbf{ }}\\\\");
+  appendHeader(lines, content);
+
+  for (const section of content.sections) {
+    appendSection(lines, section, content.currentLabel);
   }
 
-  const contactLine = [
-    personalInfo.email,
-    personalInfo.phone,
-    personalInfo.location,
-  ]
-    .filter(Boolean)
-    .map((value) => escapeLatex(value!))
+  lines.push("\\end{document}");
+
+  return lines.join("\n");
+}
+
+function appendHeader(lines: string[], content: ExportContent): void {
+  lines.push(`{\\LARGE \\textbf{${escapeLatex(content.fullName) || " "}}}\\\\`);
+
+  const contactLine = content.contactParts
+    .map(escapeLatex)
     .join(" \\textbar{} ");
   if (contactLine) {
     lines.push(contactLine + "\\\\");
   }
 
-  const linksLine = [
-    personalInfo.website,
-    personalInfo.linkedIn,
-    personalInfo.github,
-  ]
-    .filter(Boolean)
-    .map((value) => `\\url{${escapeLatexUrl(value!)}}`)
+  const linksLine = content.linkParts
+    .map((value) => `\\url{${escapeLatexUrl(value)}}`)
     .join(" \\textbar{} ");
   if (linksLine) {
     lines.push(linksLine + "\\\\");
@@ -69,163 +71,99 @@ function buildLatexDocument(doc: CVDocument, labels: ExportLabels): string {
   lines.push("\\hrule");
   lines.push("\\vspace{0.2em}");
 
-  if (personalInfo.summary) {
-    lines.push(escapeLatex(personalInfo.summary));
+  if (content.summary) {
+    lines.push(escapeLatex(content.summary));
     lines.push("");
   }
-
-  if (sections.experience.visible && sections.experience.items.length > 0) {
-    appendSectionTitle(lines, labels.sections.experience);
-    for (const item of sections.experience.items) {
-      appendRoleRow(
-        lines,
-        item.role,
-        dateRange(item.startDate, item.endDate, item.current, labels.current),
-      );
-      appendSubline(lines, [item.company, item.location]);
-      appendTextBlock(lines, item.summary);
-    }
-  }
-
-  if (sections.education.visible && sections.education.items.length > 0) {
-    appendSectionTitle(lines, labels.sections.education);
-    for (const item of sections.education.items) {
-      const degreeLabel = [item.degree, item.fieldOfStudy]
-        .filter(Boolean)
-        .join(" - ");
-      appendRoleRow(
-        lines,
-        degreeLabel || item.institution,
-        dateRange(item.startDate, item.endDate, item.current, labels.current),
-      );
-      appendSubline(lines, [item.institution, item.location]);
-      appendTextBlock(lines, item.summary);
-    }
-  }
-
-  if (sections.skills.visible && sections.skills.items.length > 0) {
-    appendSectionTitle(lines, labels.sections.skills);
-    const skillText = sections.skills.items
-      .map((s) => (s.level ? `${s.name} - ${s.level}` : s.name))
-      .join(" ; ");
-    lines.push(escapeLatex(skillText));
-    lines.push("");
-  }
-
-  if (sections.languages.visible && sections.languages.items.length > 0) {
-    appendSectionTitle(lines, labels.sections.languages);
-    for (const item of sections.languages.items) {
-      const langLine = [
-        item.name,
-        item.proficiency,
-        item.details ? `(${item.details})` : "",
-      ]
-        .filter(Boolean)
-        .join(" - ");
-      lines.push(escapeLatex(langLine));
-    }
-    lines.push("");
-  }
-
-  if (sections.volunteer.visible && sections.volunteer.items.length > 0) {
-    appendSectionTitle(lines, labels.sections.volunteer);
-    for (const item of sections.volunteer.items) {
-      appendRoleRow(
-        lines,
-        item.role,
-        dateRange(item.startDate, item.endDate, item.current, labels.current),
-      );
-      appendSubline(lines, [item.organization, item.location]);
-      appendTextBlock(lines, item.summary);
-    }
-  }
-
-  if (sections.projects.visible && sections.projects.items.length > 0) {
-    appendSectionTitle(lines, labels.sections.projects);
-    for (const item of sections.projects.items) {
-      appendRoleRow(
-        lines,
-        item.name,
-        dateRange(item.startDate, item.endDate, item.current, labels.current),
-      );
-      appendTextBlock(lines, item.role);
-
-      const projectLinks = [item.website, item.github]
-        .filter(Boolean)
-        .map((value) => `\\url{${escapeLatexUrl(value)}}`)
-        .join(" \\textbullet{} ");
-      if (projectLinks) {
-        lines.push(projectLinks);
-      }
-
-      if (item.technologies.length > 0) {
-        lines.push(escapeLatex(item.technologies.join(", ")));
-      }
-
-      appendTextBlock(lines, item.summary);
-    }
-  }
-
-  if (sections.extras.visible && sections.extras.items.length > 0) {
-    appendSectionTitle(lines, labels.sections.extras);
-    for (const item of sections.extras.items) {
-      const extraLine = item.value
-        ? `${item.title}: ${item.value}`
-        : item.title;
-      lines.push(`\\textbf{${escapeLatex(extraLine)}}`);
-      appendTextBlock(lines, item.details);
-    }
-  }
-
-  lines.push("\\end{document}");
-
-  return lines.join("\n");
 }
 
-function appendSectionTitle(lines: string[], title: string): void {
-  lines.push(`\\section*{${escapeLatex(title)}}`);
-  lines.push("\\vspace{-0.4em}");
-}
-
-function appendRoleRow(lines: string[], role: string, dates: string): void {
-  lines.push(
-    `\\textbf{${escapeLatex(role)}} \\hfill ${escapeLatex(dates)}\\\\`,
-  );
-}
-
-function appendSubline(lines: string[], values: string[]): void {
-  const text = values.filter(Boolean).join(" - ");
-  if (!text) {
-    return;
-  }
-  lines.push(`\\textit{${escapeLatex(text)}}\\\\`);
-}
-
-function appendTextBlock(lines: string[], text: string): void {
-  if (!text) {
-    return;
-  }
-  lines.push(escapeLatex(text));
-}
-
-function dateRange(
-  start: string,
-  end: string,
-  current: boolean,
+function appendSection(
+  lines: string[],
+  section: ExportSection,
   currentLabel: string,
-): string {
-  const from = start || "-";
-  const to = current ? currentLabel : end || "-";
-  return `${from} - ${to}`;
+): void {
+  lines.push(`\\section*{${escapeLatex(section.title)}}`);
+  lines.push("\\vspace{-0.4em}");
+
+  switch (section.kind) {
+    case "entries":
+      for (const entry of section.entries) {
+        appendEntry(lines, entry, currentLabel);
+      }
+      break;
+    case "skills":
+      lines.push(
+        escapeLatex(
+          section.skills
+            .map((skill) =>
+              skill.level ? `${skill.name} - ${skill.level}` : skill.name,
+            )
+            .join(" ; "),
+        ),
+      );
+      lines.push("");
+      break;
+    case "languages":
+      for (const language of section.languages) {
+        const line = [
+          language.name,
+          language.proficiency,
+          language.details ? `(${language.details})` : "",
+        ]
+          .filter(Boolean)
+          .join(" - ");
+        lines.push(escapeLatex(line));
+      }
+      lines.push("");
+      break;
+    case "extras":
+      for (const extra of section.extras) {
+        const line = extra.value
+          ? `${extra.title}: ${extra.value}`
+          : extra.title;
+        lines.push(`\\textbf{${escapeLatex(line)}}`);
+        if (extra.details) {
+          lines.push(escapeLatex(extra.details));
+        }
+      }
+      break;
+  }
 }
 
-function triggerDownload(blob: Blob, filename: string): void {
-  const url = URL.createObjectURL(blob);
-  const a = window.document.createElement("a");
-  a.href = url;
-  a.download = filename;
-  a.click();
-  URL.revokeObjectURL(url);
+function appendEntry(
+  lines: string[],
+  entry: ExportEntry,
+  currentLabel: string,
+): void {
+  const title = nonEmpty(entry.titleParts).join(" - ") || entry.titleFallback;
+  const dates = formatDateRange(entry.dates, currentLabel, "-");
+  lines.push(
+    `\\textbf{${escapeLatex(title)}} \\hfill ${escapeLatex(dates)}\\\\`,
+  );
+
+  const subtitle = entry.subtitleParts.join(" - ");
+  if (subtitle) {
+    lines.push(`\\textit{${escapeLatex(subtitle)}}\\\\`);
+  }
+
+  if (entry.roleLine) {
+    lines.push(escapeLatex(entry.roleLine));
+  }
+
+  const links = entry.linkParts
+    .map((value) => `\\url{${escapeLatexUrl(value)}}`)
+    .join(" \\textbullet{} ");
+  if (links) {
+    lines.push(links);
+  }
+
+  if (entry.technologies.length > 0) {
+    lines.push(escapeLatex(entry.technologies.join(", ")));
+  }
+
+  if (entry.body) {
+    lines.push(escapeLatex(entry.body));
+  }
 }
 
 function escapeLatex(text: string): string {

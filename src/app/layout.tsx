@@ -27,9 +27,7 @@ export default function RootLayout({
       className={`${inter.variable} ${geistMono.variable}`}
       suppressHydrationWarning
     >
-      <body className="font-sans antialiased">
-        {children}
-      </body>
+      <body className="font-sans antialiased">{children}</body>
     </html>
   );
 }

@@ -1,5 +1,5 @@
 import { filterCVForExport } from "@/lib/exporters/filter";
-import { createSampleCVDocument } from "@/types/cv.types";
+import { createSampleCVDocument } from "@/lib/cv-factories";
 
 describe("filterCVForExport", () => {
   it("keeps only visible items while preserving section visibility", () => {

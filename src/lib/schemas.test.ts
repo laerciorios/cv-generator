@@ -1,5 +1,5 @@
 import { cvDocumentSchema } from "@/lib/schemas";
-import { createSampleCVDocument } from "@/types/cv.types";
+import { createSampleCVDocument } from "@/lib/cv-factories";
 
 describe("cvDocumentSchema", () => {
   it("accepts a valid CV document", () => {

@@ -1,5 +1,6 @@
+import { createEmptyCVDocument } from "@/lib/cv-factories";
 import { cvDocumentSchema, formatZodIssues } from "@/lib/schemas";
-import { createEmptyCVDocument, type CVDocument } from "@/types/cv.types";
+import type { CVDocument } from "@/types/cv.types";
 
 export const CV_DOCUMENT_STORAGE_KEY = "cv-generator.document";
 
